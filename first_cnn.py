@@ -7,18 +7,16 @@ Created on Sat Dec 23 09:55:45 2017
 
 import os
 import pandas as pd
-import numpy as np
 
-from os.path import join, exists
+from os.path import join
 
-from keras.preprocessing.image import ImageDataGenerator,array_to_img, img_to_array, load_img
+from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
-from shutil import copyfile
 
-from tqdm import tqdm
+import functions as fn
 
 data_dir = 'C:/Users/Evan/Documents/GitHub/Data/Doggos'
 create_dirs = False
@@ -35,37 +33,7 @@ doggo_types = set(targets_series)
 
 if create_dirs:
 
-    os.chdir(join(data_dir, 'train'))
-    
-    for doggo in doggo_types:
-        
-        subset = df_train.loc[df_train['breed'] == doggo, :]
-                
-        print('Creating folder for %s' % (doggo))
-        print('Number of %s: %s' % (doggo, subset.shape[0]))
-        
-        train_files = subset['file'].sample(frac = 0.7)
-        valid_files = subset['file'][~subset['file'].isin(train_files)]
-        
-        train_folder_path = data_dir + '/' + 'train/' + doggo
-        valid_folder_path = data_dir + '/' + 'validation/' + doggo
-        
-        for f_path in [train_folder_path, valid_folder_path]:
-        
-            if not os.path.exists(f_path):
-                os.makedirs(f_path)
-            
-        print('Moving images to train directory..')
-        
-        for i, file in enumerate(train_files):
-            
-            copyfile(file, join(train_folder_path, doggo + '_' + str(i) + '.jpg'))
-            
-        print('Moving images to validation directory..')
-        
-        for i, file in enumerate(valid_files):
-            
-            copyfile(file, join(valid_folder_path, doggo + '_' + str(i) + '.jpg'))
+    fn.create_train_valid_dirs(doggo_types, data_dir)
 
 os.chdir(data_dir)
 
