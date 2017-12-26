@@ -41,8 +41,8 @@ img_width, img_height = 500, 375
 
 train_data_dir = 'train'
 validation_data_dir = 'validation'
-nb_train_samples = 2000
-nb_validation_samples = 800
+nb_train_samples = 7143
+nb_validation_samples = 3079
 epochs = 50
 batch_size = 16
 
@@ -73,7 +73,7 @@ model.add(Activation('sigmoid'))
 model.add(Dense(NUM_CLASSES, activation = 'softmax'))
 
 model.compile(loss='categorical_crossentropy',
-              optimizer='rmsprop',
+              optimizer='adam',
               metrics=['accuracy'])
 
 train_datagen = ImageDataGenerator(
@@ -85,9 +85,8 @@ train_datagen = ImageDataGenerator(
 # this is the augmentation configuration we will use for testing:
 # only rescaling
 
-valid_path = join(os.getcwd(), 'validation')
-train_path = join(os.getcwd(), 'train')
-
+valid_path = join(data_dir, 'validation')
+train_path = join(data_dir, 'train')
 
 test_datagen = ImageDataGenerator(rescale=1. / 255)
 
@@ -95,19 +94,21 @@ train_generator = train_datagen.flow_from_directory(
     train_path,
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    classes = list(doggo_types),
+    classes= list(doggo_types),
     class_mode='categorical')
 
 validation_generator = test_datagen.flow_from_directory(
     validation_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    classes = list(doggo_types),
+    classes= list(doggo_types),
     class_mode='categorical')
 
 model.fit_generator(
     train_generator,
-    steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples // batch_size)
+
+model.save('first_cnn.h5')
+
