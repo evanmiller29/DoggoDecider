@@ -88,7 +88,7 @@ model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-model.fit(X_train, Y_train, epochs=50,
+model.fit(X_train, Y_train, epochs=25,
           validation_data=(X_valid, Y_valid), verbose=1)
 
 model.save('first_cnn.h5')
